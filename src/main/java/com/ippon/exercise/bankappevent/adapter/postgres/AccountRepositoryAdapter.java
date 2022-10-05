@@ -18,10 +18,12 @@ public class AccountRepositoryAdapter implements AccountRepository {
   @Override
   public Optional<Account> save(Account account) {
     AccountDAO saveObject = new AccountDAO(account.getFirstName(), account.getLastName());
+    if ((account.getId() != 0)) {
+      saveObject.setId(account.getId());
+    }
     saveObject.setBalance(account.getBalance());
     AccountDAO save = repository.save(saveObject);
-    account.setId(save.getId());
-    return Optional.of(account);
+    return Optional.of(accountDaoToAccount(save));
   }
 
   @Override

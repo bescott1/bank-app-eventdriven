@@ -39,7 +39,11 @@ public class AccountService implements AccountActions {
 
   @Override
   public Account deposit(int id, BigDecimal amount) {
-    return null;
+    Account account = getAccount(id);
+    account.setBalance(account.getBalance().add(amount));
+    return accountRepository
+        .save(account)
+        .orElseThrow(AccountError::new);
   }
 
   @Override
