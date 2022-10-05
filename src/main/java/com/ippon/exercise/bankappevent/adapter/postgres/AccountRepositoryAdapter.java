@@ -3,7 +3,6 @@ package com.ippon.exercise.bankappevent.adapter.postgres;
 import com.ippon.exercise.bankappevent.domain.exception.AccountNotFoundException;
 import com.ippon.exercise.bankappevent.domain.model.Account;
 import com.ippon.exercise.bankappevent.domain.ports.AccountRepository;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 

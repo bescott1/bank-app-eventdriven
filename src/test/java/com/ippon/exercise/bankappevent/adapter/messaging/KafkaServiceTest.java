@@ -31,6 +31,7 @@ class KafkaServiceTest {
   public void testPublishingSerialization() throws JsonProcessingException {
     //Given
     AccountStatusEvent accountStatusEvent = new AccountStatusEvent();
+    accountStatusEvent.setEventId("testId");
     accountStatusEvent.setFirstName("Ben");
     accountStatusEvent.setLastName("Scott");
     accountStatusEvent.setBalance(BigDecimal.TEN);
@@ -40,7 +41,8 @@ class KafkaServiceTest {
     subject.publishAccountStatus(accountStatusEvent);
 
     //Then
-    Mockito.verify(kafkaTemplate).send("account_event", "{\"id\":6,"
+    Mockito.verify(kafkaTemplate).send("account_event", "{\"eventId\":\"testId\","
+        + "\"id\":6,"
         + "\"balance\":10,"
         + "\"firstName\":\"Ben\","
         + "\"lastName\":\"Scott\"}");
@@ -55,10 +57,11 @@ class KafkaServiceTest {
     Mockito.when(accountActions.getAccount(3)).thenReturn(account);
 
     //When
-    subject.onAccountActionEvent("{\"action\":\"get\",\"id\":\"3\"}");
+    subject.onAccountActionEvent("{\"action\":\"get\",\"id\":\"3\", \"eventId\":\"testId\"}");
 
     //Then
-    Mockito.verify(kafkaTemplate).send("account_event", "{\"id\":3,"
+    Mockito.verify(kafkaTemplate).send("account_event", "{\"eventId\":\"testId\","
+        + "\"id\":3,"
         + "\"balance\":13.32,"
         + "\"firstName\":\"Ben\","
         + "\"lastName\":\"Scott\"}");

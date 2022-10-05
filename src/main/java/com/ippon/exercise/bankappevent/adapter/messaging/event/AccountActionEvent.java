@@ -4,16 +4,26 @@ import java.math.BigDecimal;
 
 public class AccountActionEvent {
 
+
+  private String eventId;
+
   private int id;
   private String action;
   private String firstName;
   private String lastName;
-
   private BigDecimal amount;
 
   private BigDecimal balance = BigDecimal.ZERO;
 
   public AccountActionEvent() {
+  }
+
+  public String getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(String eventId) {
+    this.eventId = eventId;
   }
 
   public int getId() {

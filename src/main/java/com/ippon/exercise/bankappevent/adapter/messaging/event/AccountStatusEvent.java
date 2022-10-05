@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 
 public class AccountStatusEvent {
 
+  private String eventId;
+
   private int id;
   private BigDecimal balance;
   private String firstName;
@@ -13,11 +15,20 @@ public class AccountStatusEvent {
   public AccountStatusEvent() {
   }
 
-  public AccountStatusEvent(Account account) {
+  public AccountStatusEvent(Account account, String eventId) {
+    this.eventId = eventId;
     this.id = account.getId();
     this.firstName = account.getFirstName();
     this.lastName = account.getLastName();
     this.balance = account.getBalance();
+  }
+
+  public String getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(String eventId) {
+    this.eventId = eventId;
   }
 
   public int getId() {

@@ -1,7 +1,5 @@
 package com.ippon.exercise.bankappevent.adapter.messaging;
 
-import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountActionEvent;
-import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountStatusEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -21,7 +19,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
 @EnableKafka
