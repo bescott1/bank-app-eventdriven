@@ -9,6 +9,5 @@ import org.springframework.data.repository.CrudRepository;
 public interface AccountRepository  {
 
     Optional<Account> save(Account account);
-    List<Account> findAll();
     Optional<Account> findById(int id);
 }

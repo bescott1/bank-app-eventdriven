@@ -1,5 +1,6 @@
 package com.ippon.exercise.bankappevent.adapter.messaging.event;
 
+import com.ippon.exercise.bankappevent.domain.model.Account;
 import java.math.BigDecimal;
 
 public class AccountStatusEvent {
@@ -10,6 +11,13 @@ public class AccountStatusEvent {
   private String lastName;
 
   public AccountStatusEvent() {
+  }
+
+  public AccountStatusEvent(Account account) {
+    this.id = account.getId();
+    this.firstName = account.getFirstName();
+    this.lastName = account.getLastName();
+    this.balance = account.getBalance();
   }
 
   public int getId() {
