@@ -24,6 +24,7 @@ public class AccountService implements AccountActions {
   @Override
   public Account create(String firstName, String lastName) throws AccountError {
     Account account = new Account(firstName, lastName);
+    account.setBalance(BigDecimal.ZERO);
     return accountRepository
         .save(account)
         .orElseThrow(AccountError::new);

@@ -7,6 +7,7 @@ import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountStatusEven
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +33,18 @@ public class AccountCreationIntTests {
   @Test
   public void createAccountEndToEnd() throws JsonProcessingException, InterruptedException {
 
-    AccountActionEvent accountActionEvent = new AccountActionEvent();
-    accountActionEvent.setEventId("TEST-CREATE-" + UUID.randomUUID().toString().substring(0,8));
-    accountActionEvent.setAction("create");
-    accountActionEvent.setFirstName("Ben");
-    accountActionEvent.setLastName("Scott");
+    AccountStatusEvent accountStatusEvent = createAccount("Ben", "Scott");
 
-    kafkaService.publishAccountAction(accountActionEvent);
+    AccountStatusEvent getActionResult = retrieveAccount(accountStatusEvent);
 
-    Optional<AccountStatusEvent> accountStatusEvent = kafkaTestConsumer.waitOnResponse(
-        accountActionEvent.getEventId());
-    Assertions.assertTrue(accountStatusEvent.isPresent());
+    Assertions.assertEquals("Ben", getActionResult.getFirstName());
+    Assertions.assertEquals("Scott", getActionResult.getLastName());
+    Assertions.assertEquals(BigDecimal.valueOf(0.00).setScale(2), getActionResult.getBalance());
+    Assertions.assertEquals(accountStatusEvent.getId(), getActionResult.getId());
+  }
 
-    AccountStatusEvent createResult = accountStatusEvent.get();
-
+  private AccountStatusEvent retrieveAccount(AccountStatusEvent createResult)
+      throws JsonProcessingException, InterruptedException {
     AccountActionEvent getAction = new AccountActionEvent();
     getAction.setEventId("TEST-CREATE-" + UUID.randomUUID().toString().substring(0,8));
     getAction.setAction("get");
@@ -56,12 +55,23 @@ public class AccountCreationIntTests {
     Optional<AccountStatusEvent> retrieveAccount = kafkaTestConsumer.waitOnResponse(
         getAction.getEventId());
     Assertions.assertTrue(retrieveAccount.isPresent());
-    AccountStatusEvent getActionResult = accountStatusEvent.get();
+    return retrieveAccount.get();
+  }
 
-    Assertions.assertEquals(accountActionEvent.getFirstName(), getActionResult.getFirstName());
-    Assertions.assertEquals(accountActionEvent.getLastName(), getActionResult.getLastName());
-    Assertions.assertEquals(BigDecimal.ZERO, getActionResult.getBalance());
-    Assertions.assertEquals(createResult.getId(), getActionResult.getId());
+  private AccountStatusEvent createAccount(String firstName, String lastName)
+      throws JsonProcessingException, InterruptedException {
+    AccountActionEvent accountActionEvent = new AccountActionEvent();
+    accountActionEvent.setEventId("TEST-CREATE-" + UUID.randomUUID().toString().substring(0,8));
+    accountActionEvent.setAction("create");
+    accountActionEvent.setFirstName(firstName);
+    accountActionEvent.setLastName(lastName);
+
+    kafkaService.publishAccountAction(accountActionEvent);
+
+    Optional<AccountStatusEvent> accountStatusEvent = kafkaTestConsumer.waitOnResponse(
+        accountActionEvent.getEventId());
+    Assertions.assertTrue(accountStatusEvent.isPresent());
+    return accountStatusEvent.get();
   }
 
 
