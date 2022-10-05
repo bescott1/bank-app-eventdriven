@@ -4,13 +4,32 @@ import java.math.BigDecimal;
 
 public class AccountActionEvent {
 
+  private int id;
   private String action;
   private String firstName;
   private String lastName;
 
+  private BigDecimal amount;
+
   private BigDecimal balance = BigDecimal.ZERO;
 
   public AccountActionEvent() {
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public BigDecimal getAmount() {
+    return amount;
+  }
+
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
   }
 
   public String getAction() {

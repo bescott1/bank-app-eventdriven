@@ -6,10 +6,8 @@ import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountActionEven
 import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountStatusEvent;
 import com.ippon.exercise.bankappevent.domain.model.Account;
 import com.ippon.exercise.bankappevent.domain.ports.AccountActions;
-import com.ippon.exercise.bankappevent.domain.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -20,9 +18,9 @@ public class KafkaService {
 
   private static final String ACCOUNT_EVENT = "account_event";
 
-  private KafkaTemplate<String, String> kafkaTemplate;
-  private AccountActions accountActions;
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final KafkaTemplate<String, String> kafkaTemplate;
+  private final AccountActions accountActions;
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public KafkaService(KafkaTemplate<String, String> kafkaTemplate, AccountActions accountActions) {
     this.kafkaTemplate = kafkaTemplate;
@@ -35,20 +33,32 @@ public class KafkaService {
 
   @KafkaListener(topics = "account_action")
   public void onAccountActionEvent(String accountEvent) throws JsonProcessingException {
+    LOGGER.info("Received event: {}", accountEvent);
+
     AccountActionEvent accountActionEvent = objectMapper.readValue(accountEvent,
         AccountActionEvent.class);
 
-    LOGGER.info("Received event: {}", accountActionEvent);
     switch (accountActionEvent.getAction()) {
       case "create":
-        Account account = accountActions.create(accountActionEvent.getFirstName(),
-            accountActionEvent.getLastName());
-        publishAccountStatus(new AccountStatusEvent(account));
+        createAccount(accountActionEvent);
         break;
+      case "get":
+        getAccount(accountActionEvent);
       default:
         LOGGER.error("Unhandled command");
 
     }
 
+  }
+
+  private void createAccount(AccountActionEvent accountActionEvent) throws JsonProcessingException {
+    Account account = accountActions.create(accountActionEvent.getFirstName(),
+        accountActionEvent.getLastName());
+    publishAccountStatus(new AccountStatusEvent(account));
+  }
+
+  private void getAccount(AccountActionEvent accountActionEvent) throws JsonProcessingException {
+    Account account = accountActions.getAccount(accountActionEvent.getId());
+    publishAccountStatus(new AccountStatusEvent(account));
   }
 }
