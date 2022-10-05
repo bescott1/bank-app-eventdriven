@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: bankappevent
+  profiles:
+    active: dev
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:h2:file:./build/h2db/db/bankapp;DB_CLOSE_DELAY=-1
+    username: bankapp
+    password:
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+  h2:
+    console:
+      enabled: true
+  liquibase:
+    change-log: classpath:/liquibase/changelog-master.xml
+  kafka:
+    bootstrap-servers: http://localhost:29092
+    consumer:
+      group-id: bank-app
+server:
+  port: 8080
