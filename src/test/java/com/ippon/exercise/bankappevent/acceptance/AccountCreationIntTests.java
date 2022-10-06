@@ -7,22 +7,15 @@ import com.ippon.exercise.bankappevent.adapter.messaging.event.AccountStatusEven
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-//@Testcontainers
 @SpringBootTest
 public class AccountCreationIntTests {
-
-//  @Container
-  public static KafkaContainer kafka =
-      new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"));
 
   @Autowired
   private KafkaService kafkaService;
