@@ -69,4 +69,21 @@ class AccountServiceTest {
     assertThrows(AccountNotFoundException.class, () -> subject.getAccount(3));
   }
 
+  @Test
+  public void testAccountDeposit() {
+    //given
+    Account account = new Account("first", "last");
+    account.setId(5);
+    account.setBalance(BigDecimal.valueOf(10.18));
+
+    Mockito.when(accountRepository.findById(5)).thenReturn(Optional.of(account));
+    Mockito.when(accountRepository.save(account)).thenReturn(Optional.of(account));
+
+    //when
+    Account deposit = subject.deposit(5, BigDecimal.valueOf(32.01));
+
+    //then
+    assertEquals(BigDecimal.valueOf(42.19), deposit.getBalance());
+  }
+
 }

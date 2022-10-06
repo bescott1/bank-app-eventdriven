@@ -51,6 +51,9 @@ public class KafkaService {
       case "get":
         getAccount(accountActionEvent);
         break;
+      case "deposit":
+        depositIntoAccount(accountActionEvent);
+        break;
       default:
         LOGGER.error("Unhandled command");
     }
@@ -65,6 +68,11 @@ public class KafkaService {
 
   private void getAccount(AccountActionEvent accountActionEvent) throws JsonProcessingException {
     Account account = accountActions.getAccount(accountActionEvent.getId());
+    publishAccountStatus(new AccountStatusEvent(account, accountActionEvent.getEventId()));
+  }
+
+  private void depositIntoAccount(AccountActionEvent accountActionEvent) throws JsonProcessingException {
+    Account account = accountActions.deposit(accountActionEvent.getId(), accountActionEvent.getAmount());
     publishAccountStatus(new AccountStatusEvent(account, accountActionEvent.getEventId()));
   }
 }
